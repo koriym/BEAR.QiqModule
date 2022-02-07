@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace BEAR\QiqModule;
 
 use BEAR\Resource\RenderInterface;
+use Qiq\TemplateCore;
 use Ray\Di\AbstractModule;
 use Ray\Di\Scope;
 
@@ -20,6 +21,7 @@ final class QiqModule extends AbstractModule
 
     protected function configure(): void
     {
+        $this->bind(TemplateCore::class)->toProvider(TemplateProvidcer::class);
         $this->bind()->annotatedWith('qiq_template_dir')->toInstance($this->templateDir);
         $this->bind(RenderInterface::class)->to(QiqRenderer::class)->in(Scope::SINGLETON);
 

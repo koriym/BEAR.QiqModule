@@ -10,6 +10,8 @@ use Ray\Di\Injector;
 
 use function assert;
 use function dirname;
+use function serialize;
+use function unserialize;
 
 class QiqRendererTest extends TestCase
 {
@@ -32,7 +34,7 @@ class QiqRendererTest extends TestCase
 ', $view);
     }
 
-    public function testCacheRender(): void
+    public function testCacheRender(): FakeRo
     {
         $cachePath = __DIR__ . '/tmp';
         $this->module->install(new QiqProdModule($cachePath));
@@ -42,5 +44,16 @@ class QiqRendererTest extends TestCase
         $view = (string) $ro;
         $this->assertSame('Hello, World. That was Qiq! And this is PHP, World.
 ', $view);
+
+        return $ro;
+    }
+
+    /**
+     * @depends testCacheRender
+     */
+    public function testSerialize(FakeRo $ro): void
+    {
+        $ro = unserialize(serialize($ro));
+        $this->assertInstanceOf(FakeRo::class, $ro);
     }
 }
